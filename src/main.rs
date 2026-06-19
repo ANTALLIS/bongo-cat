@@ -1,9 +1,40 @@
 use raylib::prelude::*;
 use std::io::{BufRead, BufReader};
 use std::os::unix::net::UnixListener;
+use std::path::PathBuf;
 use std::process::{Child, Command};
 use std::sync::mpsc;
 use std::thread;
+
+fn resource_path(rel: &str) -> PathBuf {
+    let exe = std::env::current_exe().expect("Missing current_exe!");
+    let resources = exe
+        .parent()
+        .and_then(|p| p.parent())
+        .map(|p| p.join("Resources"))
+        .expect("Bad app bundle layout");
+
+    resources.join(rel)
+}
+
+fn assets_root() -> PathBuf {
+    let exe = std::env::current_exe().expect("Missing current_exe");
+
+    // Bundled app: .../BongoCat.app/Contents/MacOS/bongo-cat
+    if let Some(bundle_root) = exe.parent().and_then(|p| p.parent()) {
+        let resources = bundle_root.join("Resources").join("assets");
+        if resources.exists() {
+            return resources;
+        }
+    }
+
+    // Dev build fallback: project_root/assets
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("assets")
+}
+
+fn theme_dir(theme: &str) -> PathBuf {
+    assets_root().join("theme").join(theme)
+}
 
 fn main() {
     // Clean up
@@ -55,12 +86,17 @@ fn main() {
 
     // Load textures (your existing loading code)
     let theme = "default";
-    let base_url = format!("./assets/theme/{theme}");
-    let cat_base_img = Image::load_image(&format!("{base_url}/base.png")).unwrap();
-    let cat_left_down_img = Image::load_image(&format!("{base_url}/left-down.png")).unwrap();
-    let cat_left_up_img = Image::load_image(&format!("{base_url}/left-up.png")).unwrap();
-    let cat_right_down_img = Image::load_image(&format!("{base_url}/right-down.png")).unwrap();
-    let cat_right_up_img = Image::load_image(&format!("{base_url}/right-up.png")).unwrap();
+    let theme_dir = theme_dir(theme);
+    let cat_base_img =
+        Image::load_image(theme_dir.join("base.png").to_string_lossy().as_ref()).unwrap();
+    let cat_left_down_img =
+        Image::load_image(theme_dir.join("left-down.png").to_string_lossy().as_ref()).unwrap();
+    let cat_left_up_img =
+        Image::load_image(theme_dir.join("left-up.png").to_string_lossy().as_ref()).unwrap();
+    let cat_right_down_img =
+        Image::load_image(theme_dir.join("right-down.png").to_string_lossy().as_ref()).unwrap();
+    let cat_right_up_img =
+        Image::load_image(theme_dir.join("right-up.png").to_string_lossy().as_ref()).unwrap();
 
     let cat_base_tex = rl.load_texture_from_image(&thread, &cat_base_img).unwrap();
     let cat_left_down_tex = rl

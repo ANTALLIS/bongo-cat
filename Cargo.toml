@@ -3,13 +3,17 @@ name = "bongo-cat"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
-raylib = "6.0.0"
-rdev = "0.5.3"
+[[bin]]
+name = "bongo-cat"
+path = "src/main.rs"
 
 [[bin]]
 name = "bongo-listener"
 path = "src/bongo-listener.rs"
+
+[dependencies]
+raylib = "6.0.0"
+rdev = "0.5.3"
 
 [package.metadata.bundle]
 name = "BongoCat"
@@ -17,19 +21,6 @@ identifier = "io.github.antallis.bongocat"
 version = "0.1.0"
 resources = ["assets"]
 short_description = "A friend that types with you"
-long_description = """
-According to all known laws of aviation, there is no way that a bee should be able to fly. Its wings are too small to get its fat little body off the ground.
-"""
-icon = [
-  "./assets/icons/AppIcon.iconset/icon_128x128.png",
-  "./assets/icons/AppIcon.iconset/icon_128x128@2x.png",
-  "./assets/icons/AppIcon.iconset/icon_16x16.png",
-  "./assets/icons/AppIcon.iconset/icon_16x16@2x.png",
-  "./assets/icons/AppIcon.iconset/icon_256x256.png",
-  "./assets/icons/AppIcon.iconset/icon_256x256@2x.png",
-  "./assets/icons/AppIcon.iconset/icon_32x32.png",
-  "./assets/icons/AppIcon.iconset/icon_32x32@2x.png",
-  "./assets/icons/AppIcon.iconset/icon_512x512.png",
-  "./assets/icons/AppIcon.iconset/icon_512x512@2x.png",
-]
+long_description = "A friend that types with you"
+icon = ["assets/icons/AppIcon.icns"]
 
